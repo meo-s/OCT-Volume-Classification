@@ -22,7 +22,11 @@ def _validate_uniform_test_split_size(
     train_size: Optional[Union[int, float]],
     label: Tuple[Any, ...],
 ) -> Tuple[int, int]:
-    """Validates given split size and returns verified train/test split size."""
+    """Validates given split size and returns verified train/test split size.
+
+    Returns:
+        A pair of calculated trainset and testset size.
+    """
 
     n_samples = len(label)
     n_test = test_size
