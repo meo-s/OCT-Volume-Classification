@@ -54,8 +54,8 @@ def _validate_uniform_test_split_size(
 
     if n_samples < (n_train + n_test):
         raise ValueError('Samples are not enough to split.\n'
-                         'test_size={}, train_size={} were given.'
-                         .format(test_size, train_size))
+                         'test_size={}, train_size={} were given.'.format(
+                             test_size, train_size))
 
     spc = [*dict(Counter(label)).values()]
     if min(spc) < max(_uniformly_distribute(n_test, len(np.unique(label)))):
