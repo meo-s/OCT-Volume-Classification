@@ -6,9 +6,9 @@ import numpy as np
 
 
 def _validate_uniform_test_split_size(
-    test_size: Optional[Union[int, float]],
-    train_size: Optional[Union[int, float]],
     label: Tuple[Any, ...],
+    test_size: Optional[Union[int, float]] = None,
+    train_size: Optional[Union[int, float]] = None,
 ) -> Tuple[int, int]:
     """Validates given split size and returns verified train/test split size.
 
