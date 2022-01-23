@@ -1,8 +1,10 @@
 import math
 from collections import Counter
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Iterator, Optional, Tuple, Union
 
 import numpy as np
+import sklearn.model_selection
+import sklearn.utils
 
 
 def _validate_uniform_test_split_size(
@@ -67,3 +69,58 @@ def _validate_uniform_test_split_size(
                              test_size, train_size))
 
     return n_train, n_test
+
+
+class UniformTestSpliter(sklearn.model_selection.BaseCrossValidator):
+    """Uniform test samples splitter over classes."""
+
+    def __init__(self,
+                 n_splits: int,
+                 *,
+                 test_size: Optional[Union[float, int]] = None,
+                 shuffle: bool = False,
+                 random_state: Optional[Union[int,
+                                              'np.random.RandomState']] = None):
+        self.n_splits = n_splits
+        self.test_size = test_size
+        self.shuffle = shuffle
+        self.random_state = random_state
+
+    def _iter_test_indices(
+        self,
+        X: Optional[Tuple[Any, ...]] = None,
+        y: Optional[Tuple[Any, ...]] = None,
+        groups: Any = None,
+    ) -> Iterator:
+        y = y if y is not None else X
+
+        rng = sklearn.utils.check_random_state(self.random_state)
+
+        classes = np.unique(y)
+        class_indices = {}
+        for class_ in classes:
+            indices, = np.nonzero(y == class_)
+            if self.shuffle:
+                indices = indices[rng.permutation(len(indices))]
+            class_indices[class_] = indices
+
+        # Check whether dataset is fitted for n-cross split.
+        total_test_size = self.test_size * self.n_splits
+        _validate_uniform_test_split_size(test_size=total_test_size, label=y)
+
+        _, n_test = _validate_uniform_test_split_size(test_size=self.test_size,
+                                                      label=y)
+        spc = n_test // len(classes)
+        for i in range(self.n_splits):
+            test_indices = []
+            for class_ in classes:
+                indices = class_indices[class_]
+                indices = indices[spc * i:spc * (i + 1)]
+                test_indices.append(indices)
+
+            yield np.concatenate(test_indices)
+
+    def get_n_splits(self, X=None, y=None, groups=None) -> int:
+        """Returns self.n_splits."""
+
+        return self.n_splits
