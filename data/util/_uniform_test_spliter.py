@@ -12,6 +12,17 @@ def _validate_uniform_test_split_size(
 ) -> Tuple[int, int]:
     """Validates given split size and returns verified train/test split size.
 
+    Args:
+        label:
+            An array of sample's label.
+
+        test_size:
+            A desired testset size. The calculated testset size is not always
+            same as it, but very close.
+        train_size:
+            A desired trainset size. The calculated trainset size is not always
+            same as it, but very close.
+
     Returns:
         A pair of calculated trainset and testset size.
     """
