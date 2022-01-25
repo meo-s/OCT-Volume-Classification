@@ -1,6 +1,6 @@
 import math
 from collections import Counter
-from typing import Any, Iterator, Optional, Tuple, Union
+from typing import Any, Iterator, List, Optional, Tuple, Union
 
 import numpy as np
 import sklearn.model_selection
@@ -125,3 +125,53 @@ class UniformTestSpliter(sklearn.model_selection.BaseCrossValidator):
         """Returns self.n_splits."""
 
         return self.n_splits
+
+
+def train_test_split(
+    *arrays: Tuple[List[Any], ...],
+    test_size: Optional[Union[float, int]] = None,
+    train_size: Optional[Union[float, int]] = None,
+    random_state: Optional[Union[int, 'np.random.RandomState']] = None,
+    shuffle: bool = True,
+    stratify: Optional[List[Any]] = None,
+    uniform: Optional[List[Any]] = None,
+):
+    """
+    A simple extension of scikit-learn's train_test_split(). If uniform
+    argument is not None, it splits dataset to train and test dataset, of which
+    test dataset has uniform distribution over data sample's class.
+
+    If uniform argument is None, it calls scikit-learn's train_test_split().
+    Please see below document:
+    https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html 
+    """
+
+    if stratify is not None and uniform is not None:
+        raise ValueError('')
+
+    if uniform is None:
+        return sklearn.model_selection.train_test_split(
+            *arrays,
+            test_size=test_size,
+            train_size=train_size,
+            random_state=random_state,
+            shuffle=shuffle,
+            stratify=stratify,
+        )
+
+    n_train, n_test = _validate_uniform_test_split_size(uniform,
+                                                        test_size=test_size,
+                                                        train_size=train_size)
+
+    uniform_test_spliter = UniformTestSpliter(n_splits=1,
+                                              test_size=n_test,
+                                              shuffle=shuffle,
+                                              random_state=random_state)
+    # pylint: disable=no-value-for-parameter
+    ret = uniform_test_spliter.split(*arrays).__next__()
+    if len(arrays) == 1:
+        x_train, x_test = ret
+        return x_train[:n_train], x_test
+    else:
+        x_train, x_test, y_train, y_test = ret
+        return x_train[:n_train], x_test, y_train[:n_train], y_test
