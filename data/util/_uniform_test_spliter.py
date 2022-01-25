@@ -143,7 +143,7 @@ def train_test_split(
 
     If uniform argument is None, it calls scikit-learn's train_test_split().
     Please see below document:
-    https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html 
+    https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
     """
 
     if stratify is not None and uniform is not None:
