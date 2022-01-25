@@ -78,7 +78,7 @@ class UniformTestSpliter(sklearn.model_selection.BaseCrossValidator):
                  n_splits: int,
                  *,
                  test_size: Optional[Union[float, int]] = None,
-                 shuffle: bool = False,
+                 shuffle: bool = True,
                  random_state: Optional[Union[int,
                                               'np.random.RandomState']] = None):
         self.n_splits = n_splits
