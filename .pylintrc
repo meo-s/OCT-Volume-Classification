@@ -3,3 +3,4 @@ disable=
     missing-module-docstring,
     consider-using-f-string,
     import-outside-toplevel,
+good-names=x,y,i,j,k
