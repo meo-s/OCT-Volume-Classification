@@ -159,6 +159,9 @@ def train_test_split(
             stratify=stratify,
         )
 
+    arrays = [np.array(arr) if not isinstance(arr, np.ndarray) else arr
+              for arr in arrays]
+
     n_train, n_test = _validate_uniform_test_split_size(uniform,
                                                         test_size=test_size,
                                                         train_size=train_size)
@@ -168,10 +171,13 @@ def train_test_split(
                                               shuffle=shuffle,
                                               random_state=random_state)
     # pylint: disable=no-value-for-parameter
-    ret = uniform_test_spliter.split(*arrays).__next__()
+    train_indices, test_indices = uniform_test_spliter.split(*arrays).__next__()
     if len(arrays) == 1:
-        x_train, x_test = ret
+        x, = arrays
+        x_train, x_test = x[train_indices], x[test_indices]
         return x_train[:n_train], x_test
     else:
-        x_train, x_test, y_train, y_test = ret
+        x, y = arrays
+        x_train, x_test = x[train_indices], x[test_indices]
+        y_train, y_test = y[train_indices], y[test_indices]
         return x_train[:n_train], x_test, y_train[:n_train], y_test
