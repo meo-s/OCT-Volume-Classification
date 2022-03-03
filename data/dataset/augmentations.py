@@ -145,3 +145,9 @@ class Equalize(_BaseAugmentationOp):
     def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
         return PIL.ImageOps.equalize(img)
 
+
+class Flip(_BaseAugmentationOp):
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        return PIL.ImageOps.flip(img)
+
