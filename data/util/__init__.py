@@ -1,2 +1,0 @@
-from ._uniform_test_spliter import train_test_split
-from ._uniform_test_spliter import UniformTestSpliter
