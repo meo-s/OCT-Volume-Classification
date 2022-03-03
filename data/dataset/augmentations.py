@@ -151,3 +151,12 @@ class Flip(_BaseAugmentationOp):
     def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
         return PIL.ImageOps.flip(img)
 
+
+class Solarize(_BaseAugmentationOp):
+
+    def __init__(self, magnitude_limit: Tuple[float, float] = (0, 256)):
+        super().__init__(magnitude_limit, random_mirror=None)
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        return PIL.ImageOps.solarize(img, m)
+
