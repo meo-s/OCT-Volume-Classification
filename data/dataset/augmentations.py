@@ -221,3 +221,8 @@ class Sharpness(_BaseAugmentationOp):
     def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
         return PIL.ImageEnhance.Sharpness(img).enhance(m)
 
+
+class Identity(_BaseAugmentationOp):
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        return img
