@@ -177,3 +177,10 @@ class SolarizeAdd(_BaseAugmentationOp):
         img = PIL.Image.fromarray(img)
         return PIL.ImageOps.solarize(img, threshold=self.threshold)
 
+
+class Posterize(_BaseAugmentationOp):
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        m = max(1, int(m))
+        return PIL.ImageOps.posterize(img, m)
+
