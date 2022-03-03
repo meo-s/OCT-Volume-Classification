@@ -5,6 +5,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 from typing import Optional, Tuple
 
+import numpy as np
 import PIL
 import PIL.Image
 import PIL.ImageOps
@@ -159,4 +160,20 @@ class Solarize(_BaseAugmentationOp):
 
     def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
         return PIL.ImageOps.solarize(img, m)
+
+
+class SolarizeAdd(_BaseAugmentationOp):
+
+    def __init__(self, threshold: int = 128):
+        super().__init__()
+
+        self.threshold = threshold
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        img = np.array(img, dtype=int)
+        img = img + m
+        img = np.clip(img, 0, 255)
+        img = img.astype(np.uint8)
+        img = PIL.Image.fromarray(img)
+        return PIL.ImageOps.solarize(img, threshold=self.threshold)
 
