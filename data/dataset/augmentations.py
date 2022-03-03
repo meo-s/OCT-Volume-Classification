@@ -77,3 +77,16 @@ class TranslateX(_BaseAugmentationOp):
         m *= img.size[0]
         return img.transform(img.size, PIL.Image.AFFINE, (1, 0, m, 0, 1, 0))
 
+
+class TranslateY(_BaseAugmentationOp):
+
+    def __init__(self,
+                 magnitude_limit: Tuple[float, float] = (-0.45, 0.45),
+                 random_mirror: bool = True):
+        super().__init__(magnitude_limit=magnitude_limit,
+                         random_mirror=random_mirror)
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        m *= img.size[1]
+        return img.transform(img.size, PIL.Image.AFFINE, (1, 0, 0, 0, 1, m))
+
