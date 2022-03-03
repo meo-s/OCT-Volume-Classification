@@ -212,3 +212,12 @@ class Brightness(_BaseAugmentationOp):
     def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
         return PIL.ImageEnhance.Brightness(img).enhance(m)
 
+
+class Sharpness(_BaseAugmentationOp):
+
+    def __init__(self, magnitude_limit: Tuple[float, float] = (0.1, 1.9)):
+        super().__init__(magnitude_limit=magnitude_limit)
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        return PIL.ImageEnhance.Sharpness(img).enhance(m)
+
