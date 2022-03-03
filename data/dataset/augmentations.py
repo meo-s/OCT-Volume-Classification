@@ -9,6 +9,7 @@ import numpy as np
 import PIL
 import PIL.Image
 import PIL.ImageOps
+import PIL.ImageEnhance
 from PIL.Image import Image as PILImage
 
 # https://github.com/kakaobrain/fast-autoaugment/blob/master/FastAutoAugment/augmentations.py
@@ -183,4 +184,13 @@ class Posterize(_BaseAugmentationOp):
     def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
         m = max(1, int(m))
         return PIL.ImageOps.posterize(img, m)
+
+
+class Contrast(_BaseAugmentationOp):
+
+    def __init__(self, magnitude_limit: Tuple[float, float] = (0.1, 1.9)):
+        super().__init__(magnitude_limit=magnitude_limit, random_mirror=None)
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        return PIL.ImageEnhance.Contrast(img).enhance(m)
 
