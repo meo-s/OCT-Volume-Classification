@@ -102,3 +102,15 @@ class TranslateXAbs(_BaseAugmentationOp):
     def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
         return img.transform(img.size, PIL.Image.AFFINE, (1, 0, m, 0, 1, 0))
 
+
+class TranslateYAbs(_BaseAugmentationOp):
+
+    def __init__(self,
+                 magnitude_limit: Tuple[float, float] = (0, 10),
+                 random_mirror: bool = True):
+        super().__init__(magnitude_limit=magnitude_limit,
+                         random_mirror=random_mirror)
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        return img.transform(img.size, PIL.Image.AFFINE, (1, 0, 0, 0, 1, m))
+
