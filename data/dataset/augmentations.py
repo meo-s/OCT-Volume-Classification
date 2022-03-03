@@ -9,6 +9,9 @@ import PIL
 import PIL.Image
 from PIL.Image import Image as PILImage
 
+# https://github.com/kakaobrain/fast-autoaugment/blob/master/FastAutoAugment/augmentations.py
+# https://github.com/ildoonet/pytorch-randaugment/blob/master/RandAugment/augmentations.py
+
 
 class _BaseAugmentationOp(metaclass=ABCMeta):
 
@@ -36,4 +39,16 @@ class _BaseAugmentationOp(metaclass=ABCMeta):
     @abstractmethod
     def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
         pass
+
+
+class ShearX(_BaseAugmentationOp):
+
+    def __init__(self,
+                 magnitude_limit: Tuple[float, float] = (-0.3, 0.3),
+                 random_mirror: bool = True):
+        super().__init__(magnitude_limit=magnitude_limit,
+                         random_mirror=random_mirror)
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        return img.transform(img.size, PIL.Image.AFFINE, (1, m, 0, 0, 1, 0))
 
