@@ -133,3 +133,9 @@ class AutoContrast(_BaseAugmentationOp):
     def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
         return PIL.ImageOps.autocontrast(img)
 
+
+class Invert(_BaseAugmentationOp):
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        return PIL.ImageOps.invert(img)
+
