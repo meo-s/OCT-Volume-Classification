@@ -7,6 +7,7 @@ from typing import Optional, Tuple
 
 import PIL
 import PIL.Image
+import PIL.ImageOps
 from PIL.Image import Image as PILImage
 
 # https://github.com/kakaobrain/fast-autoaugment/blob/master/FastAutoAugment/augmentations.py
@@ -125,4 +126,10 @@ class Rotate(_BaseAugmentationOp):
 
     def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
         return img.rotate(m)
+
+
+class AutoContrast(_BaseAugmentationOp):
+
+    def _apply_transformation(self, img: PILImage, m: float) -> PILImage:
+        return PIL.ImageOps.autocontrast(img)
 
