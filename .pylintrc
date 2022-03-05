@@ -1,7 +1,8 @@
 [MASTER]
 disable=
     missing-module-docstring,
+    missing-function-docstring,
     missing-class-docstring,
     consider-using-f-string,
     import-outside-toplevel,
-good-names=x,y,i,j,k,n,m
+good-names=x,y,i,j,k,n,m,w,h
