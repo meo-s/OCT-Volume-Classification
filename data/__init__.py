@@ -1,4 +1,3 @@
-from . import dataset
 from . import augmentations
 from . import rand_augment
 from ._uniform_test_spliter import *  # noqa: F403
