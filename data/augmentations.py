@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import random
 from abc import ABCMeta
 from abc import abstractmethod
-from typing import Optional, Tuple
+from typing import Callable, Optional, Tuple
 
 import numpy as np
 import PIL
@@ -14,6 +14,8 @@ from PIL.Image import Image as PILImage
 
 # https://github.com/kakaobrain/fast-autoaugment/blob/master/FastAutoAugment/augmentations.py
 # https://github.com/ildoonet/pytorch-randaugment/blob/master/RandAugment/augmentations.py
+
+AugmentationOp = Callable[[PILImage, float], PILImage]
 
 
 class _BaseAugmentationOp(metaclass=ABCMeta):
