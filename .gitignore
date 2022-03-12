@@ -1,3 +1,5 @@
 **/__pycache__/
+big_transfer/
+.cache/
 .vscode/
 .style.yapf
