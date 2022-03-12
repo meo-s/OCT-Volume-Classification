@@ -10,7 +10,7 @@ from PIL.Image import Image as PILImage
 
 from data import augmentations as augs
 from data import RandAugment
-from hyper import HyperParameter
+from hyper import HyperParameters
 
 
 class GNUOCTVolume(torch.utils.data.Dataset):
@@ -76,7 +76,7 @@ def _gnuoct_augmentation_list(
 
 def get_transform(
     ds_type: Union[Literal['train'], Literal['val'], Literal['test']],
-    hyp: HyperParameter,
+    hyp: HyperParameters,
 ) -> torch.utils.data.DataLoader:
     if ds_type not in ('train', 'val', 'test'):
         raise ValueError('ds_type must be one of "train", "val" and "test".')
