@@ -5,5 +5,5 @@ disable=
     missing-class-docstring,
     consider-using-f-string,
     import-outside-toplevel,
-good-names=x,y,i,j,k,n,m,w,h,f
+good-names=x,y,i,j,k,n,m,w,h,f,hp
 extension-pkg-whitelist=pycurl
