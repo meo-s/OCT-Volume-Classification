@@ -49,7 +49,8 @@ def harvest(
         sets[f'x_{stype}'].append(data_sample_path)
         sets[f'y_{stype}'].append(label)
 
-    return [
-        np.array(sets[i])
-        for i in ['x_train', 'x_test', 'y_train', 'y_test']
-    ]
+    stypes = ['x_train', 'x_test', 'y_train', 'y_test']
+    if 'x_val' in sets and 'y_val' in sets:
+        stypes += ['x_val', 'y_val']
+
+    return [np.array(sets[i]) for i in stypes]
