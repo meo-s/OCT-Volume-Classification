@@ -1,5 +1,6 @@
+.cache/
+.style.yapf
+.vscode/
 **/__pycache__/
 big_transfer/
-.cache/
-.vscode/
-.style.yapf
+log/
