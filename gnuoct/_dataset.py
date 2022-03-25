@@ -8,9 +8,9 @@ import torch.utils.data
 import torchvision as tv
 from PIL.Image import Image as PILImage
 
+import hyper
 from data import augmentations as augs
 from data import RandAugment
-from hyper import HyperParameters
 
 
 class GNUOCTVolume(torch.utils.data.Dataset):
@@ -76,7 +76,7 @@ def _gnuoct_augmentation_list(
 
 def get_transform(
     ds_type: Union[Literal['train'], Literal['val'], Literal['test']],
-    hyp: HyperParameters,
+    hp: hyper.HyperParameters,
 ) -> torch.utils.data.DataLoader:
     if ds_type not in ('train', 'val', 'test'):
         raise ValueError('ds_type must be one of "train", "val" and "test".')
@@ -84,8 +84,8 @@ def get_transform(
     BICUBIC = tv.transforms.InterpolationMode.BICUBIC  # pylint: disable=invalid-name
     if ds_type == 'train':
         return tv.transforms.Compose([
-            RandAugment(n=hyp['aug.rand_augment.N'],
-                        m=hyp['aug.rand_augment.M'],
+            RandAugment(n=hp['aug.rand_augment.N'],
+                        m=hp['aug.rand_augment.M'],
                         augmentation_list=_gnuoct_augmentation_list()),
             tv.transforms.ColorJitter(saturation=0.4, hue=0.4),
             tv.transforms.RandomHorizontalFlip(),
