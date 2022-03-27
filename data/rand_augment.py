@@ -51,7 +51,6 @@ class RandAugment:
 
     def __call__(self, img: PILImage) -> PILImage:
         ops = random.choices(self.augmentation_list, k=self.n)
-        print(ops)
         for op, min_magnitude, max_magnitude in ops:  # pylint: disable=invalid-name
             m = self.m / self.max_magnitude_level
             m = (max_magnitude - min_magnitude) * m + min_magnitude
