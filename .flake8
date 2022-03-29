@@ -3,4 +3,4 @@ max-line-length = 80
 per-file-ignores =
     *: W504,
        E501,  # line too long
-    **/__init__.py: F401,
+    **/__init__.py: F401, F403
