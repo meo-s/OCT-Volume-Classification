@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from typing import Any, Callable, Iterable, List, Literal, Optional, Tuple, Type, Union
+from typing import Any, Callable, Iterable, List, Literal, Optional, Tuple, Union
 
 import PIL
 import torch
@@ -15,11 +15,13 @@ from data import RandAugment
 
 class GNUOCTVolume(torch.utils.data.Dataset):
 
-    CLASSES = ('AMD', 'DME', 'DRUSEN', 'NORMAL')
+    CLASS = Union[Literal['AMD'], Literal['DME'], Literal['DRUSEN'],
+                  Literal['NORMAL']]
+    CLASSES: Tuple[CLASS] = ('AMD', 'DME', 'DRUSEN', 'NORMAL')
 
     def __init__(
         self,
-        data_samples: Iterable[Tuple[str, Type['GNUOCTVolume.CLASSES']]],
+        data_samples: Iterable[Tuple[str, CLASS]],
         transform: Optional[Callable[[PILImage], Any]] = None,
     ):
         super().__init__()
