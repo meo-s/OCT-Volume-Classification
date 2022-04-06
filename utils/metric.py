@@ -10,7 +10,7 @@ class GradualAverageMetric:
         verbose: bool = True,
         total_samples: Optional[int] = None,
     ):
-        self.name: str = name
+        self._name: str = name
         self.total_samples: Optional[int] = total_samples
         self.verbose = verbose
         self._value: float = 0
@@ -41,12 +41,16 @@ class GradualAverageMetric:
             if self._cumulated_samples < self.total_samples:
                 warnings.warn(
                     'All of samples are not participated in calculating a '
-                    f'metric value "{self.name}", but the object was reset.'
+                    f'metric value "{self._name}", but the object was reset.'
                     'This means the metric value before reset was incomplete.',
                     UserWarning)
 
         self._value = 0
         self._cumulated_samples = 0
+
+    @property
+    def name(self) -> str:
+        return self._name
 
     @property
     def value(self) -> float:
