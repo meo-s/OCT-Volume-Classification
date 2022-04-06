@@ -1,5 +1,9 @@
+import collections
 import warnings
 from typing import Optional
+
+
+Metric = collections.namedtuple('Metric', ('name', 'value'))
 
 
 class GradualAverageMetric:
