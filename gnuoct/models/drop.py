@@ -22,9 +22,9 @@ def drop_path(x: torch.Tensor,
 
 class DropPath(nn.Module):
 
-    def __init__(self, drop_prob: float):
+    def __init__(self, p: float):
         super().__init__()
-        self.drop_prob = drop_prob
+        self.drop_prob = p
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return drop_path(x, self.drop_prob, self.training)
