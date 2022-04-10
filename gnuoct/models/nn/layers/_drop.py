@@ -26,5 +26,8 @@ class DropPath(nn.Module):
         super().__init__()
         self.drop_prob = p
 
+    def __repr__(self) -> str:
+        return f'DropPath(p={self.drop_prob})'
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return drop_path(x, self.drop_prob, self.training)
