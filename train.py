@@ -6,11 +6,13 @@ import hashlib
 import itertools
 import multiprocessing as mp
 import os
+import random
 import sys
 import warnings
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Literal, Optional, Tuple, Union
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -187,6 +189,36 @@ def create_dtaldrs(
         )
 
     return dtaldrs
+
+
+def mixup_data(
+    x: torch.Tensor,
+    y: torch.Tensor,
+    chunk_sizes: Tuple[int],
+    lamb: float,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """https://github.com/facebookresearch/mixup-cifar10"""
+
+    if any(chunk_size != chunk_sizes[0] for chunk_size in chunk_sizes):
+        raise RuntimeError(
+            'All of OCT Volume size must be same to perform mixup.')
+
+    indices = np.random.permutation(len(chunk_sizes))
+    x = x.view(len(chunk_sizes), chunk_sizes[0], *x.shape[-3:])
+    x = lamb * x + (1 - lamb) * x[indices]
+    return x.view(-1, *x.shape[-3:]), y, y[indices]
+
+
+def mixup_criterion(
+    criterion: Callable[[torch.Tensor, torch.Tensor], torch.Tensor],
+    y_pred: torch.Tensor,
+    y_a: torch.Tensor,
+    y_b: torch.Tensor,
+    lamb: float,
+) -> torch.Tensor:
+    """https://github.com/facebookresearch/mixup-cifar10"""
+
+    return lamb * criterion(y_pred, y_a) + (1 - lamb) * criterion(y_pred, y_b)
 
 
 def _train(log_dir: str, dataset_path: str, hp: hyper.HyperParameters):
