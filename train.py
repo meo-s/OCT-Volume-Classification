@@ -64,9 +64,19 @@ def get_model(hp: hyper.HyperParameters) -> nn.Module:
 def get_optimizer(params: Any,
                   hp: hyper.HyperParameters) -> torch.optim.Optimizer:
     if hp['optimizer'] == 'SGD':
-        optimizer = torch.optim.SGD(params,
-                                    lr=hp['SGD.base_lr'],
-                                    momentum=hp['SGD.momentum'])
+        optimizer = torch.optim.SGD(
+            params,
+            lr=hp['optimizer.base_lr'],
+            momentum=hp['SGD.momentum'],
+            weight_decay=hp['optimizer.weight_decay'],
+        )
+        return optimizer
+    if hp['optimizer'] == 'AdamW':
+        optimizer = torch.optim.AdamW(
+            params,
+            lr=hp['optimizer.base_lr'],
+            weight_decay=hp['optimizer.weight_decay'],
+        )
         return optimizer
 
     raise ValueError('Unrecognized optimizer type: {}.'.format(hp['optimizer']))
