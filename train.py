@@ -290,6 +290,38 @@ def train_once(
     return total_eq / total, total_loss / len(train_dtaldr)
 
 
+@torch.no_grad()
+def evaluate(
+    eval_dtaldr: torch.utils.data.DataLoader,
+    model: nn.Module,
+    criterion: Callable[[torch.Tensor, torch.Tensor], torch.Tensor],
+    device: Optional[Union[str, torch.device]] = None,
+) -> Tuple[float, float]:
+    model.eval()
+
+    if device is None:
+        device = next(model.parameters()).device
+
+    total = 0
+    total_eq = 0
+    total_loss = 0.
+    eval_pbar = tqdm(eval_dtaldr, leave=False)
+    for i, (x, y, chunk_sizes) in enumerate(eval_pbar, start=1):
+        x = x.to(device, non_blocking=True)
+        y = y.to(device, non_blocking=True)
+
+        y_pred = model(x)
+        loss = criterion(y_pred, y)
+        total += len(chunk_sizes)
+        total_eq += torch.eq(y_pred.argmax(-1), y).sum().item()
+        total_loss += loss.item()
+
+        desc = f'> Evaluating | ACC={total_eq / total:.2%} | LOSS={total_loss / i:.6f}'
+        eval_pbar.set_description(desc)
+
+    return total_eq / total, total_loss / len(eval_dtaldr)
+
+
 def _train(log_dir: str, dataset_path: str, hp: hyper.HyperParameters):
     now = datetime.now().strftime('%Y%m%d_%a_%Hh%Mm%Ss')
     log_dir = os.path.join(log_dir, now)
