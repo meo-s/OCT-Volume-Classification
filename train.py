@@ -43,16 +43,18 @@ def get_train_tag(hp: Union[str, hyper.HyperParameters]) -> str:
 
 def get_model(hp: hyper.HyperParameters) -> nn.Module:
     if hp['model'] == 'OCTVolumeConv1dNet':
-        prt_model_path = os.path.join(_CACHE_DIR, _PRT_MODEL)
-        feature_extractor = gnuoct.models.ResNet50(prt_model_path)
-        model = gnuoct.models.OCTVolumeConv1dNet(feature_extractor)
-        return model
+        raise ValueError('Not implemented.')
 
     if hp['model'] == 'OCTVolumeCBAMNet':
-        raise ValueError('Not implemented')
+        raise ValueError('Not implemented.')
 
     if hp['model'] == 'OCTVolumeFCAttnNet':
-        raise ValueError('Not implemented')
+        raise ValueError('Not implemented.')
+
+    if hp['model'] == 'OCTVolumeTokenAttnNet':
+        prt_model_path = os.path.join(_CACHE_DIR, _PRT_MODEL)
+        model = gnuoct.models.OCTVolumeTokenAttnNet(prt_model_path)
+        return model
 
     raise ValueError('Unrecognized model type: {}.'.format(hp['model']))
 
