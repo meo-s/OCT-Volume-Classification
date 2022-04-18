@@ -169,6 +169,7 @@ def create_datasets(
     return datasets
 
 
+@torch.no_grad()
 def _collate_fn(
     batch: Tuple[Tuple[torch.Tensor], int],
     pad_fn: Optional[Callable[[List[torch.Tensor]], torch.Tensor]] = None,
@@ -194,8 +195,10 @@ def create_dtaldrs(
             dataset=dataset,
             batch_size=hp['sz_batch'],
             shuffle=(dtype == 'train'),
-            num_workers=mp.cpu_count(),
             collate_fn=functools.partial(_collate_fn, pad_fn=pad_fn),
+            num_workers=mp.cpu_count(),
+            persistent_workers=True,
+            pin_memory=True,
         )
 
     return dtaldrs
