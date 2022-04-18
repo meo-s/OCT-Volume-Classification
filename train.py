@@ -10,6 +10,7 @@ import random
 import sys
 import warnings
 from datetime import datetime
+from collections import defaultdict
 from typing import Any, Callable, Dict, List, Literal, Optional, Tuple, Union
 
 import numpy as np
@@ -232,6 +233,61 @@ def mixup_criterion(
     """https://github.com/facebookresearch/mixup-cifar10"""
 
     return lamb * criterion(y_pred, y_a) + (1 - lamb) * criterion(y_pred, y_b)
+
+
+def train_once(
+    train_dtaldr: torch.utils.data.DataLoader,
+    model: nn.Module,
+    criterion: Callable[[torch.Tensor, torch.Tensor], torch.Tensor],
+    optimizer: torch.optim.Optimizer,
+    hp: hyper.HyperParameters,
+    device: Optional[Union[str, torch.device]] = None,
+) -> Tuple[float, float]:
+    model.train()
+
+    if device is None:
+        device = next(model.parameters()).device
+
+    total = 0
+    total_eq = 0
+    total_loss = 0.
+    train_pbar = tqdm(train_dtaldr, leave=False)
+    for i, (x, y, chunk_sizes) in enumerate(train_pbar, start=1):
+        x = x.to(device, non_blocking=True)
+        y = y.to(device, non_blocking=True)
+
+        if hp['aug.mixup.use']:
+            alpha = hp['aug.mixup.alpha']
+            lamb = np.random.beta(alpha, alpha)
+            x, y_a, y_b = mixup_data(x, y, chunk_sizes, lamb)
+
+        y_pred = model(x)
+        if hp['aug.mixup.use']:
+            loss = mixup_criterion(criterion, y_pred, y_a, y_b, lamb)
+        else:
+            loss = criterion(y_pred, y)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        total += len(chunk_sizes)
+        total_loss += loss.item()
+        with torch.no_grad():
+            if hp['aug.mixup.use']:
+                y_a, y_b = (y_b, y_a) if lamb < 0.5 else (y_a, y_b)
+                _, predictions = y_pred.topk(k=2, dim=-1)
+                top1, top2 = predictions[:, 0], predictions[:, 1]
+                total_eq += ((1 - lamb) * torch.eq(y_a, top1).sum().item() +
+                             lamb * torch.eq(y_b, top2).sum().item())
+            else:
+                top1 = torch.argmax(y_pred, -1)
+                total_eq += torch.eq(y, top1).sum().item()
+
+        desc = f'> Training | ACC={total_eq / total:.2%} | LOSS={total_loss / i:.6f}'
+        train_pbar.set_description(desc)
+
+    return total_eq / total, total_loss / len(train_dtaldr)
 
 
 def _train(log_dir: str, dataset_path: str, hp: hyper.HyperParameters):
