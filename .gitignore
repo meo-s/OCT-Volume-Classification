@@ -2,5 +2,6 @@
 .style.yapf
 .vscode/
 **/__pycache__/
+**/*.hp.yaml
 big_transfer/
 log/
