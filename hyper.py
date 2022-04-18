@@ -13,4 +13,10 @@ HyperParameters = Dict[HyperParameterNames, Union[float, int, str]]
 
 def load(file_path: str) -> HyperParameters:
     with open(file_path, mode='r', encoding='utf-8') as f:
-        return yaml.load(f, Loader=yaml.CLoader)
+        hp = yaml.load(f, Loader=yaml.CLoader)
+
+    for hp_name in hp.keys():
+        if hp_name not in HyperParameterNames.__args__:
+            raise ValueError(f'Invalid hyperparameter name: "{hp_name}".')
+
+    return hp
