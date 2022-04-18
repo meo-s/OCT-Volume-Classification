@@ -2,15 +2,12 @@ from typing import Dict, Literal, Union
 
 import yaml
 
-HyperParameterNames = Union[Literal['model'],
-                            Literal['n_epochs'],
-                            Literal['sz_batch'],
-                            Literal['optimizer'],
-                            Literal['SGD.base_lr'],
-                            Literal['SGD.momentum'],
-                            Literal['aug.rand_augment.use'],
-                            Literal['aug.rand_augment.N'],
-                            Literal['aug.rand_augment.M']]
+HyperParameterNames = Literal['model', 'n_epochs', 'sz_batch', 'optimizer',
+                              'optimizer.base_lr', 'optimizer.weight_decay',
+                              'SGD.momentum', 'aug.rand_augment.use',
+                              'aug.rand_augment.N', 'aug.rand_augment.M',
+                              'aug.mixup.use', 'aug.mixup.alpha',
+                              'label_smoothing']
 HyperParameters = Dict[HyperParameterNames, Union[float, int, str]]
 
 
