@@ -34,6 +34,13 @@ def _clear_terminal():
     os.system('clear' if not os.name == 'nt' else 'cls')
 
 
+def get_train_tag(hp: Union[str, hyper.HyperParameters]) -> str:
+    hp = hp if not isinstance(hp, (dict, defaultdict)) else yaml.dump(hp)
+    sha256 = hashlib.sha256()
+    sha256.update(hp.encode(encoding='utf-8'))
+    return sha256.hexdigest()
+
+
 def get_model(hp: hyper.HyperParameters) -> nn.Module:
     if hp['model'] == 'OCTVolumeConv1dNet':
         prt_model_path = os.path.join(_CACHE_DIR, _PRT_MODEL)
@@ -191,9 +198,7 @@ def _train(log_dir: str, dataset_path: str, hp: hyper.HyperParameters):
     with open(train_hp_path, mode='w', encoding='utf-8') as f:
         f.write(hp_str)
 
-    sha256 = hashlib.sha256()
-    sha256.update(hp_str.encode(encoding='utf-8'))
-    train_tag = sha256.hexdigest()
+    train_tag = get_train_tag(hp)
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     model = get_model(hp)
